@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '/shared/statsDrawer.dart';
+import '/shared/stats_drawer.dart';
 import '/shared/constants.dart';
 import '/services/flip_service.dart';
 
