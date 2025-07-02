@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "268859924374",
+    "project_id": "coinflipper-13eaa",
+    "storage_bucket": "coinflipper-13eaa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:268859924374:android:5ef43c65e5ea367f81c7b7",
+        "android_client_info": {
+          "package_name": "com.example.coin_flipper"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_i6fwFjqNNGXz6OBGWzdgjP8Pb5U0lDY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

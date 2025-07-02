@@ -1,25 +1,28 @@
+// summary: Initializes Firebase and launches the Coin Flipper app.
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'screens/coin_flipper_screen.dart';
-import 'shared/constants.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const CoinFlipperApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
 }
 
-class CoinFlipperApp extends StatelessWidget {
-  const CoinFlipperApp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Coin Flipper',
       theme: ThemeData(
-        primaryColor: Constants.primaryColor,
-        scaffoldBackgroundColor: Colors.white,
+        primarySwatch: Colors.blue,
       ),
       home: const CoinFlipperScreen(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }
