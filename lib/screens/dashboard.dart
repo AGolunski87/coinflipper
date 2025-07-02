@@ -1,16 +1,13 @@
-// summary: A CoinFlipperScreen that uses the provided FlipServices to read live counts and flip the coin via the FAB.
-import 'dart:math';
+// A dashboard page that shows four stat cards in a GridView.
+// Each card has a title, a chart placeholder, a "Last updated" subtitle,
+// and a "View Details" button that pops up a modal with the same info.
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '/shared/statsDrawer.dart';
-import '/shared/constants.dart';
-import '/services/flip_service.dart';
+import '../shared/StatsDrawer.dart';
 
-/// CoinPage with the StatsDrawer
-class CoinPage extends StatelessWidget {
-  const CoinPage({Key? key}) : super(key: key);
+//// DashboardPage with the StatsDrawer
+class DashboardPage extends StatelessWidget {
+  const DashboardPage({Key? key}) : super(key: key);
 
   void _showDetails(BuildContext context, String title, Widget content) {
     Navigator.pop(context); // close drawer if open
@@ -38,15 +35,16 @@ class CoinPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final now = TimeOfDay.now().format(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Flip a Coin')),
+      appBar: AppBar(title: const Text('Coin Flipper Dashboard')),
       drawer: StatsDrawer(onSelect: (t, c) => _showDetails(context, t, c)),
-      body: Center(
-        // Your coin flip UI goes here
-        child: ElevatedButton(
-          onPressed: () => print('Flip coin'),
-          child: const Text('Flip Coin'),
-        ),
+      body: GridView.count(
+        crossAxisCount: 2,
+        childAspectRatio: 3 / 4,
+        children: [
+          // ... same _buildStatCard calls as before ...
+        ],
       ),
     );
   }
