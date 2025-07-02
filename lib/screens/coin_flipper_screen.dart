@@ -53,8 +53,11 @@ class _coin_flipper_screenState extends State<coin_flipper_screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          AppBar(title: const Text('A very dull web apo'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('A very dull web app'),
+        centerTitle: true,
+        titleTextStyle: Theme.of(context).textTheme.titleLarge,
+      ),
       drawer: StatsDrawer(onSelect: (t, c) => _showDetails(context, t, c)),
 
       // 1️⃣ StreamBuilder to fetch heads/tails counts in real time
