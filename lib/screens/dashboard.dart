@@ -3,7 +3,7 @@
 // and a "View Details" button that pops up a modal with the same info.
 
 import 'package:flutter/material.dart';
-import '../shared/StatsDrawer.dart';
+import '/shared/StatsDrawer.dart';
 
 //// DashboardPage with the StatsDrawer
 class DashboardPage extends StatelessWidget {

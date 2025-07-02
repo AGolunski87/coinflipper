@@ -9,8 +9,8 @@ import '/shared/constants.dart';
 import '/services/flip_service.dart';
 
 /// CoinPage with the StatsDrawer
-class CoinPage extends StatelessWidget {
-  const CoinPage({Key? key}) : super(key: key);
+class CoinFlipperScreen extends StatelessWidget {
+  const CoinFlipperScreen({Key? key}) : super(key: key);
 
   void _showDetails(BuildContext context, String title, Widget content) {
     Navigator.pop(context); // close drawer if open
