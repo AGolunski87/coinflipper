@@ -1,68 +1,96 @@
+// summary: A CoinFlipperScreen that uses the provided FlipServices to read live counts and flip the coin via the FAB.
 import 'dart:math';
+
 import 'package:flutter/material.dart';
-import '../shared/constants.dart';
-import '../widgets/coin_display_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '/shared//constants.dart';
+import '/services/flip_service.dart';
 
 class CoinFlipperScreen extends StatefulWidget {
-  const CoinFlipperScreen({Key? key}) : super(key: key);
+  const CoinFlipperScreen({super.key});
 
   @override
-  _CoinFlipperScreenState createState() => _CoinFlipperScreenState();
+  State<CoinFlipperScreen> createState() => _CoinFlipperScreenState();
 }
 
 class _CoinFlipperScreenState extends State<CoinFlipperScreen> {
+  // Local state for the current coin face image.
   String _currentUrl = Constants.coinHeadsUrl;
-  int _totalFlips = 0;
-  int _headsCount = 0;
-  int _tailsCount = 0;
 
-  void _flipCoin() {
+  // Convenience getter to grab your FlipService instance.
+  FlipService get _flipService => context.read<FlipService>();
+
+  // Called by the FAB: picks heads/tails, updates UI, then writes to Firestore.
+  Future<void> _flipCoin() async {
     final isHeads = Random().nextBool();
     setState(() {
       _currentUrl = isHeads ? Constants.coinHeadsUrl : Constants.coinTailsUrl;
-      _totalFlips++;
-      if (isHeads)
-        _headsCount++;
-      else
-        _tailsCount++;
     });
-    // TODO: write this flip to Firestore
+    await _flipService.addFlip(isHeads);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: AppBar(title: const Text('Coin Flipper')),
       body: Padding(
-        padding: Constants.screenPadding,
+        padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Coin Flipper', style: Constants.titleStyle),
-            const SizedBox(height: 32),
-            CoinDisplayWidget(imageUrl: _currentUrl, onFlip: _flipCoin),
-            const SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildStat('Total', _totalFlips),
-                _buildStat('Heads', _headsCount),
-                _buildStat('Tails', _tailsCount),
-              ],
+            // Show the current coin face.
+            Expanded(
+              child: Center(child: Image.network(_currentUrl)),
+            ),
+
+            const SizedBox(height: 24),
+
+            // StreamBuilder listens to your service's flips stream.
+            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: context.watch<FlipService>().watchFlips(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                if (!snapshot.hasData) {
+                  return const CircularProgressIndicator();
+                }
+
+                final docs = snapshot.data!.docs;
+                final headsCount =
+                    docs.where((d) => d.data()['result'] == 'heads').length;
+                final tailsCount =
+                    docs.where((d) => d.data()['result'] == 'tails').length;
+                final totalCount = docs.length;
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildCounterColumn('Heads', headsCount),
+                    _buildCounterColumn('Tails', tailsCount),
+                    _buildCounterColumn('Total', totalCount),
+                  ],
+                );
+              },
             ),
           ],
         ),
       ),
+
+      // Floating action button to flip the coin.
+      floatingActionButton: FloatingActionButton(
+        onPressed: _flipCoin,
+        child: const Icon(Icons.casino),
+      ),
     );
   }
 
-  Widget _buildStat(String label, int value) {
-    return Column(
-      children: [
-        Text(value.toString(), style: Constants.titleStyle),
-        const SizedBox(height: 4),
-        Text(label, style: Constants.labelStyle),
-      ],
-    );
-  }
+  Widget _buildCounterColumn(String label, int value) => Column(
+        children: [
+          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 4),
+          Text('$value', style: const TextStyle(fontSize: 20)),
+        ],
+      );
 }
