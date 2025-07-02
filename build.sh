@@ -18,3 +18,9 @@ flutter precache --web
 # 4. Get packages and build for web
 flutter pub get
 flutter build web --release
+
+# ─── COPY YOUR PUBLIC ASSETS INTO build/web ───
+mkdir -p build/web/assets/images
+cp public/assets/images/heads.png build/web/assets/images/
+cp public/assets/images/tails.png build/web/assets/images/
+
